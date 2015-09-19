@@ -9,7 +9,7 @@ public class Main {
 
 	public static void main(String [] args) throws IOException{
 		ValuePickParser parser = new ValuePickParser();
-		BlogScrapper scrapper = new BlogScrapper(parser, parser);
-		scrapper.scrap("http://value-picks.blogspot.in/");
+		BlogScrapper scrapper = new BlogScrapper("http://value-picks.blogspot.in/", parser);
+		scrapper.scrap();
 	}
 }

@@ -5,17 +5,16 @@ import java.text.SimpleDateFormat;
 
 import org.jsoup.nodes.Document;
 
-import com.mantralabsglobal.scrap.HyperlinkValidator;
 import com.mantralabsglobal.scrap.blog.BlogPost;
 
-public class ValuePickParser implements BlogParser, HyperlinkValidator{
+public class ValuePickParser implements BlogParser{
 
 	
 	public BlogPost parseBlogPost(Document document){
 		ValuePickPost post = new ValuePickPost();
 		post.setTitle(document.select("h3.post-title").select("a").text());
 		post.setContent(document.select("div.post-body").html());
-		post.setAuthor(document.select("span.post-athor").select("span").text());
+		post.setAuthor(document.select("span.post-author").select("span").text());
 		
 		SimpleDateFormat format = new SimpleDateFormat("EEE, MMM dd, yyyy");
 		
@@ -73,9 +72,12 @@ public class ValuePickParser implements BlogParser, HyperlinkValidator{
 		
 	}
 
-	@Override
-	public boolean isValidLink(String href) {
+	public boolean isPostPage(String href) {
 		return href.matches("http:\\/\\/value-picks.blogspot.in\\/(\\d{4}\\/\\d{2})\\/(\\w+(-\\w+)*).html");
+	}
+
+	public boolean isListPage(String href) {
+		return href.startsWith("http://value-picks.blogspot.in/search?updated-max=");
 	}
 	
 }
