@@ -17,6 +17,7 @@ public class BlogPost {
 	private String title;
 	private String content;
 	private long lastModified;
+	private String summary;
 	private String author;
 	private String blog;
 	private String url;
@@ -67,5 +68,13 @@ public class BlogPost {
 
 	public void setUrl(String url) {
 		this.url = url;
+	}
+
+	public String getSummary() {
+		return summary;
+	}
+
+	public void setSummary(String summary) {
+		this.summary = summary;
 	}
 }

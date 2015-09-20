@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import org.jsoup.nodes.Document;
 import org.springframework.stereotype.Component;
 
+import com.mantralabsglobal.scrap.HtmlUtil;
 import com.mantralabsglobal.scrap.blog.BlogParser;
 import com.mantralabsglobal.scrap.dataobject.BlogPost;
 
@@ -17,6 +18,7 @@ public class ValuePickParser extends BlogParser{
 		BlogPost post = new BlogPost();
 		post.setTitle(document.select("h3.post-title").select("a").text());
 		post.setContent(document.select("div.post-body").html());
+		post.setSummary(HtmlUtil.abbreviateHtmlString(post.getContent(), 100, true));
 		post.setAuthor(document.select("span.post-author").select("span").text());
 		post.setBlog(BLOG);
 		SimpleDateFormat format = new SimpleDateFormat("EEE, MMM dd, yyyy");
