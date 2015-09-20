@@ -9,6 +9,9 @@
 
 // Apply the java plugin to add support for Java
 apply plugin: 'java'
+apply plugin: 'application'
+
+mainClassName = 'com.mantralabsglobal.scrap.core.Application'
 
 // In this section you declare where to find the dependencies of your project
 repositories {
@@ -16,6 +19,13 @@ repositories {
     // You can declare any Maven/Ivy/file repository here.
     jcenter()
 }
+
+// tag::jar[]
+jar {
+    baseName = 'mantra-scrapper'
+    version =  '0.1.0'
+}
+// end::jar[]
 
 // In this section you declare the dependencies for your production and test code
 dependencies {

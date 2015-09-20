@@ -1,4 +1,5 @@
 bin/
+build/
 bin/application.properties
 .gradle/
 .settings/
