@@ -6,8 +6,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
-import java.util.concurrent.PriorityBlockingQueue;
-
 import org.jsoup.Jsoup;
 import org.jsoup.helper.StringUtil;
 import org.jsoup.nodes.Document;
@@ -21,18 +19,19 @@ public class BlogScrapper extends com.mantralabsglobal.scrap.Scrapper implements
 	BlogParser parser;
 	List<String> hrefList;
 	Queue<String> summaryQueue;
+	private int threshold = 4;
 	
 	public BlogScrapper(String entryUrl, BlogParser parser) {
 		this.parser = parser;
 		hrefList = new ArrayList<>();
-		summaryQueue = new PriorityBlockingQueue<>();
+		summaryQueue = new PriorityQueue<>();
 		summaryQueue.add(entryUrl);
 	}
 
 	@Override
 	public void scrap() throws IOException{
 		int counter = 0;
-		while(summaryQueue.peek() != null && counter< 10)
+		while(summaryQueue.peek() != null && counter< threshold)
 		{
 			try
 			{
@@ -74,9 +73,12 @@ public class BlogScrapper extends com.mantralabsglobal.scrap.Scrapper implements
 			}
 			else if(parser.isPostPage(href) && !hrefList.contains(href))
 			{
-				hrefList.add(href);
-				System.out.println(href);
-				postFound = true;
+				List<BlogPost> blogPostList = parser.getRepository().findByUrl(href);
+				if(blogPostList == null || blogPostList.size()==0){
+					hrefList.add(href);
+					System.out.println(href);
+					postFound = true;
+				}
 			}
 			else if(parser.isListPage(href) && !summaryQueue.contains(href)){
 				summaryQueue.add(href);
@@ -102,7 +104,9 @@ public class BlogScrapper extends com.mantralabsglobal.scrap.Scrapper implements
 			public BlogPost next() {
 				String href = hrefQueue.poll();
 				try {
-					return parser.parseBlogPost(Jsoup.connect(href).get());
+					BlogPost post = parser.parseBlogPost(Jsoup.connect(href).get());
+					post.setUrl(href);
+					return post;
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -115,6 +119,14 @@ public class BlogScrapper extends com.mantralabsglobal.scrap.Scrapper implements
 				//ignore
 			}
 		};
+	}
+
+	public int getThreshold() {
+		return threshold;
+	}
+
+	public void setThreshold(int threshold) {
+		this.threshold = threshold;
 	}
 
 

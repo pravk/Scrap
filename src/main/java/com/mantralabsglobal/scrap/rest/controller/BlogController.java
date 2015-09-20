@@ -26,7 +26,9 @@ public class BlogController {
 	
 	@RequestMapping(method=RequestMethod.GET, value="search")
     public @ResponseBody List<BlogPost> searchBlog(@RequestParam(required=true) String search) {
-        return repository.findByTitleLike(search);
+        List<BlogPost> results = repository.findByTitleLikeIgnoreCase(search);
+        results.addAll(repository.findByContentLikeIgnoreCase(search));
+        return results;
     }	
 	
 }

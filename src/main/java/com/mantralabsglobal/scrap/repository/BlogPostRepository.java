@@ -8,5 +8,8 @@ import com.mantralabsglobal.scrap.dataobject.BlogPost;
 
 public interface BlogPostRepository extends MongoRepository<BlogPost, String>{
 
-	List<BlogPost> findByTitleLike(String title);
+	List<BlogPost> findByTitleLikeIgnoreCase(String title);
+	List<BlogPost> findByContentLikeIgnoreCase(String content);
+	
+	List<BlogPost> findByUrl(String url);
 }

@@ -19,6 +19,7 @@ public class BlogPost {
 	private long lastModified;
 	private String author;
 	private String blog;
+	private String url;
 	
 	public String getTitle() {
 		return title;
@@ -58,5 +59,13 @@ public class BlogPost {
 
 	public void setBlog(String blog) {
 		this.blog = blog;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
 	}
 }
