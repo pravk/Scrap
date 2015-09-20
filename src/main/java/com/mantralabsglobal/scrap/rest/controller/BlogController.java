@@ -29,9 +29,8 @@ public class BlogController {
 	
 	@RequestMapping(method=RequestMethod.GET, value="search")
     public @ResponseBody List<BlogPost> searchBlog(@RequestParam(required=true) String search, @RequestParam(required=false, defaultValue="0") int page, @RequestParam(required=false, defaultValue="10") int size) {
-        List<BlogPost> results = repository.findByTitleLikeIgnoreCase(search);
-        PageRequest pageRequest = new PageRequest(page, size, Direction.DESC, "lastModified");
-        results.addAll(repository.findByContentLikeIgnoreCase(search,  pageRequest));
+		PageRequest pageRequest = new PageRequest(page, size, Direction.DESC, "lastModified");
+        List<BlogPost> results = repository.findByContentLikeIgnoreCase(search, pageRequest);
         return results;
     }	
 	
