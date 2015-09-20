@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,10 +28,10 @@ public class BlogController {
     }
 	
 	@RequestMapping(method=RequestMethod.GET, value="search")
-    public @ResponseBody List<BlogPost> searchBlog(@RequestParam(required=true) String search) {
+    public @ResponseBody List<BlogPost> searchBlog(@RequestParam(required=true) String search, @RequestParam(required=false, defaultValue="0") int page, @RequestParam(required=false, defaultValue="10") int size) {
         List<BlogPost> results = repository.findByTitleLikeIgnoreCase(search);
-        Sort sort = new Sort(Direction.DESC, "lastModified");
-        results.addAll(repository.findByContentLikeIgnoreCase(search,  sort));
+        PageRequest pageRequest = new PageRequest(page, size, Direction.DESC, "lastModified");
+        results.addAll(repository.findByContentLikeIgnoreCase(search,  pageRequest));
         return results;
     }	
 	
