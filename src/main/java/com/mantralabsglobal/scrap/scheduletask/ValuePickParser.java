@@ -18,7 +18,7 @@ public class ValuePickParser extends BlogParser{
 		BlogPost post = new BlogPost();
 		post.setTitle(document.select("h3.post-title").select("a").text());
 		post.setContent(document.select("div.post-body").html());
-		post.setSummary(HtmlUtil.abbreviateHtmlString(post.getContent(), 100, true));
+		post.setSummary(HtmlUtil.abbreviateHtmlString(post.getContent(), 300, true));
 		post.setAuthor(document.select("span.post-author").select("span").text());
 		post.setBlog(BLOG);
 		SimpleDateFormat format = new SimpleDateFormat("EEE, MMM dd, yyyy");
