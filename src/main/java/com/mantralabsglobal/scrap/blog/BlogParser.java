@@ -1,4 +1,4 @@
-package com.mantralabsglobal.html.parser;
+package com.mantralabsglobal.scrap.blog;
 
 import org.jsoup.nodes.Document;
 

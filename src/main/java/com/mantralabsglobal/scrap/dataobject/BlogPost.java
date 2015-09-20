@@ -1,11 +1,24 @@
 package com.mantralabsglobal.scrap.dataobject;
 
+import org.springframework.data.annotation.Id;
+
 public class BlogPost {
+
+	@Id
+	private String id;
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
 
 	private String title;
 	private String content;
 	private long lastModified;
 	private String author;
+	private String blog;
 	
 	public String getTitle() {
 		return title;
@@ -37,5 +50,13 @@ public class BlogPost {
 
 	public void setAuthor(String author) {
 		this.author = author;
+	}
+
+	public String getBlog() {
+		return blog;
+	}
+
+	public void setBlog(String blog) {
+		this.blog = blog;
 	}
 }

@@ -1,9 +1,10 @@
 package com.mantralabsglobal.scrap.blog;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Map;
+import java.util.List;
+import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.concurrent.PriorityBlockingQueue;
 
@@ -13,17 +14,17 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import com.mantralabsglobal.html.parser.BlogParser;
+import com.mantralabsglobal.scrap.dataobject.BlogPost;
 
-public class BlogScrapper extends com.mantralabsglobal.scrap.Scrapper{
+public class BlogScrapper extends com.mantralabsglobal.scrap.Scrapper implements Iterable<BlogPost>{
 
 	BlogParser parser;
-	Map<String, Boolean> hrefMap;
+	List<String> hrefList;
 	Queue<String> summaryQueue;
 	
 	public BlogScrapper(String entryUrl, BlogParser parser) {
 		this.parser = parser;
-		hrefMap = new HashMap<>();
+		hrefList = new ArrayList<>();
 		summaryQueue = new PriorityBlockingQueue<>();
 		summaryQueue.add(entryUrl);
 	}
@@ -45,10 +46,6 @@ public class BlogScrapper extends com.mantralabsglobal.scrap.Scrapper{
 			{
 				e.printStackTrace();
 			}
-		}
-		for(String href: hrefMap.keySet()){
-			parser.parseBlogPost(Jsoup.connect(href).get());
-			break;
 		}
 		
 	}
@@ -75,9 +72,9 @@ public class BlogScrapper extends com.mantralabsglobal.scrap.Scrapper{
 			{
 				continue;
 			}
-			else if(parser.isPostPage(href) && !hrefMap.containsKey(href))
+			else if(parser.isPostPage(href) && !hrefList.contains(href))
 			{
-				hrefMap.put(href, Boolean.FALSE);
+				hrefList.add(href);
 				System.out.println(href);
 				postFound = true;
 			}
@@ -88,5 +85,38 @@ public class BlogScrapper extends com.mantralabsglobal.scrap.Scrapper{
 		}
 		return postFound;
 	}
+
+	@Override
+	public Iterator<BlogPost> iterator() {
+		final Queue<String> hrefQueue = new PriorityQueue<>();
+		hrefQueue.addAll(hrefList);
+		
+		return new Iterator<BlogPost>() {
+
+			@Override
+			public boolean hasNext() {
+				return hrefQueue.peek() != null;
+			}
+
+			@Override
+			public BlogPost next() {
+				String href = hrefQueue.poll();
+				try {
+					return parser.parseBlogPost(Jsoup.connect(href).get());
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				return null;
+			}
+
+			@Override
+			public void remove() {
+				//ignore
+			}
+		};
+	}
+
+
 	
 }
