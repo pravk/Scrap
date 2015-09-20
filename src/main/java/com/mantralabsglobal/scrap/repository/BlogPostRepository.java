@@ -11,7 +11,7 @@ import com.mantralabsglobal.scrap.dataobject.BlogPost;
 
 public interface BlogPostRepository extends MongoRepository<BlogPost, String>{
 
-	@Query(value="{$or:[{'title':?0},{'content':?0}]}")
+	@Query(value="{$or:[{'title': { '$regex':?0, $options: 'i'}},{'content': { '$regex': ?0, $options: 'i'}}]}")
 	List<BlogPost> findByContentLikeIgnoreCase(String content, Pageable pageable);
 	List<BlogPost> findByUrl(String url);
 	Page<BlogPost> findAll(Pageable pagable);
