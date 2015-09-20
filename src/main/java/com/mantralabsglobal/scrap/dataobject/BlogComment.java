@@ -1,5 +1,5 @@
-package com.mantralabsglobal.scrap.blog;
+package com.mantralabsglobal.scrap.dataobject;
 
-public interface BlogComment {
+public class BlogComment {
 	
 }
