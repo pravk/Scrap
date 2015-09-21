@@ -1,5 +1,7 @@
 package com.mantralabsglobal.scrap.dataobject;
 
+import java.util.List;
+
 import org.springframework.data.annotation.Id;
 
 public class BlogPost {
@@ -21,6 +23,8 @@ public class BlogPost {
 	private String author;
 	private String blog;
 	private String url;
+	
+	private List<BlogComment> comments;
 	
 	public String getTitle() {
 		return title;
@@ -76,5 +80,13 @@ public class BlogPost {
 
 	public void setSummary(String summary) {
 		this.summary = summary;
+	}
+
+	public List<BlogComment> getComments() {
+		return comments;
+	}
+
+	public void setComments(List<BlogComment> comments) {
+		this.comments = comments;
 	}
 }

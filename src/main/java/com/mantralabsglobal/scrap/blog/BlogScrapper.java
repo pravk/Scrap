@@ -1,7 +1,6 @@
 package com.mantralabsglobal.scrap.blog;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.PriorityQueue;
@@ -11,21 +10,22 @@ import org.jsoup.helper.StringUtil;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-
+import com.mantralabsglobal.scrap.dataobject.BlogComment;
 import com.mantralabsglobal.scrap.dataobject.BlogPost;
+import com.mantralabsglobal.scrap.repository.BlogPostRepository;
 
-public class BlogScrapper extends com.mantralabsglobal.scrap.Scrapper implements Iterable<BlogPost>{
+public class BlogScrapper extends com.mantralabsglobal.scrap.Scrapper{
 
 	BlogParser parser;
-	List<String> hrefList;
 	Queue<String> summaryQueue;
 	private int threshold = 4;
+	BlogPostRepository repository;
 	
-	public BlogScrapper(String entryUrl, BlogParser parser) {
+	public BlogScrapper(String entryUrl, BlogParser parser, BlogPostRepository repository) {
 		this.parser = parser;
-		hrefList = new ArrayList<>();
 		summaryQueue = new PriorityQueue<>();
 		summaryQueue.add(entryUrl);
+		this.repository = repository;
 	}
 
 	@Override
@@ -71,14 +71,25 @@ public class BlogScrapper extends com.mantralabsglobal.scrap.Scrapper implements
 			{
 				continue;
 			}
-			else if(parser.isPostPage(href) && !hrefList.contains(href))
+			else if(parser.isPostPage(href))
 			{
-				List<BlogPost> blogPostList = parser.getRepository().findByUrl(href);
-				if(blogPostList == null || blogPostList.size()==0){
-					hrefList.add(href);
-					System.out.println(href);
-					postFound = true;
+				try
+				{
+					List<BlogPost> blogPostList = parser.getRepository().findByUrl(href);
+					if(blogPostList == null || blogPostList.size()==0){
+						scrapBlogPost(href, null, false);
+						postFound = true;
+					}
+					else
+					{
+						scrapBlogPost(href, blogPostList.get(0), true);
+					}
 				}
+				catch(Exception exp)
+				{
+					exp.printStackTrace();
+				}
+				
 			}
 			else if(parser.isListPage(href) && !summaryQueue.contains(href)){
 				summaryQueue.add(href);
@@ -87,8 +98,34 @@ public class BlogScrapper extends com.mantralabsglobal.scrap.Scrapper implements
 		}
 		return postFound;
 	}
+	
+	public void scrapBlogPost(String href, BlogPost ourCopy, boolean commentsOnly) throws IOException{
+		Document document;
+		try {
+			document = Jsoup.connect(href).get();
+		} catch (IOException e) {
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			document = Jsoup.connect(href).get();
+		}
+		if(ourCopy == null)
+			ourCopy = new BlogPost();
+		BlogPost post = parser.parseBlogPost(document, ourCopy);
+		List<BlogComment> comments = parser.parseBlogComments(document);
+		if(comments !=null && !comments.isEmpty())
+		{
+			post.setComments(comments);
+		}
+		post.setUrl(href);
+		
+		repository.save(post);
+	}
 
-	@Override
+/*	@Override
 	public Iterator<BlogPost> iterator() {
 		final Queue<String> hrefQueue = new PriorityQueue<>();
 		hrefQueue.addAll(hrefList);
@@ -104,7 +141,13 @@ public class BlogScrapper extends com.mantralabsglobal.scrap.Scrapper implements
 			public BlogPost next() {
 				String href = hrefQueue.poll();
 				try {
-					BlogPost post = parser.parseBlogPost(Jsoup.connect(href).get());
+					Document document = Jsoup.connect(href).get();
+					BlogPost post = parser.parseBlogPost(document);
+					List<BlogComment> comments = parser.parseBlogComments(document);
+					if(comments !=null && !comments.isEmpty())
+					{
+						post.setComments(comments);
+					}
 					post.setUrl(href);
 					return post;
 				} catch (IOException e) {
@@ -120,7 +163,7 @@ public class BlogScrapper extends com.mantralabsglobal.scrap.Scrapper implements
 			}
 		};
 	}
-
+*/
 	public int getThreshold() {
 		return threshold;
 	}
