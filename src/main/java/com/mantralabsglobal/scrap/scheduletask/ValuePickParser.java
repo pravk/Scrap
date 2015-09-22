@@ -11,7 +11,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 
-import com.mantralabsglobal.scrap.HtmlUtil;
 import com.mantralabsglobal.scrap.blog.BlogParser;
 import com.mantralabsglobal.scrap.dataobject.BlogComment;
 import com.mantralabsglobal.scrap.dataobject.BlogPost;
@@ -23,8 +22,18 @@ public class ValuePickParser extends BlogParser{
 	public BlogPost parseBlogPost(Document document,  BlogPost post){
 		post.setTitle(document.select("h3.post-title").select("a").text());
 		post.setContent(document.select("div.post-body").html());
-		post.setSummary(HtmlUtil.abbreviateHtmlString(post.getContent(), 300, true));
-		post.setAuthor(document.select("span.post-author").select("span").text());
+		post.setSummary( truncateAfteWords(20, document.select("div.post-body").text()));
+		post.setAuthor(document.select("span.post-author").select("span.fn").text());
+		Elements images = document.select("div.post-body").select("img");
+		if(images!= null && images.size()>0)
+		{
+			post.setImageUrlList(new ArrayList<String>());
+			Iterator<Element> elt = images.iterator();
+			while(elt.hasNext()){
+				post.getImageUrlList().add(elt.next().attr("src"));
+			}
+		}
+		
 		post.setBlog(BLOG);
 		SimpleDateFormat format = new SimpleDateFormat("EEE, MMM dd, yyyy");
 		
@@ -33,6 +42,7 @@ public class ValuePickParser extends BlogParser{
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
+		System.out.println("Parsing complete for " + post.getTitle());
 		return post;
 		
 	}

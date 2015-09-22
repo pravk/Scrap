@@ -23,8 +23,10 @@ public class BlogPost {
 	private String author;
 	private String blog;
 	private String url;
+	private List<String> imageUrlList;
 	
 	private List<BlogComment> comments;
+	private int commentCount;
 	
 	public String getTitle() {
 		return title;
@@ -89,4 +91,21 @@ public class BlogPost {
 	public void setComments(List<BlogComment> comments) {
 		this.comments = comments;
 	}
+
+	public List<String> getImageUrlList() {
+		return imageUrlList;
+	}
+
+	public void setImageUrlList(List<String> imageUrlList) {
+		this.imageUrlList = imageUrlList;
+	}
+
+	public int getCommentCount() {
+		return commentCount;
+	}
+
+	public void setCommentCount(int commentCount) {
+		this.commentCount = commentCount;
+	}
+
 }

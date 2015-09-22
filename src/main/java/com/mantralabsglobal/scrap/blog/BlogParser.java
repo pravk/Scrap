@@ -26,4 +26,8 @@ public abstract class BlogParser {
 
 	@Autowired
 	private BlogPostRepository repository;
+	
+	protected static String truncateAfteWords(int n, String str) {
+		return str.replaceAll("^((?:\\W*\\w+){" + n + "}).*$", "$1");	
+	}  
 }

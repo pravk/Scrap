@@ -119,6 +119,11 @@ public class BlogScrapper extends com.mantralabsglobal.scrap.Scrapper{
 		if(comments !=null && !comments.isEmpty())
 		{
 			post.setComments(comments);
+			post.setCommentCount(comments.size());
+		}
+		else
+		{
+			post.setCommentCount(0);
 		}
 		post.setUrl(href);
 		
