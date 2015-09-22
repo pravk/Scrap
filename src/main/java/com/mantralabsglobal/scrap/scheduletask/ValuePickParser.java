@@ -21,7 +21,9 @@ public class ValuePickParser extends BlogParser{
 	
 	public BlogPost parseBlogPost(Document document,  BlogPost post){
 		post.setTitle(document.select("h3.post-title").select("a").text());
-		post.setContent(document.select("div.post-body").html());
+		Elements contentElts = document.select("div.post-body");
+		removeStyleAttributes(contentElts);
+		post.setContent(contentElts.html());
 		post.setSummary( truncateAfteWords(20, document.select("div.post-body").text()));
 		post.setAuthor(document.select("span.post-author").select("span.fn").text());
 		Elements images = document.select("div.post-body").select("img");

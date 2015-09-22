@@ -3,6 +3,8 @@ package com.mantralabsglobal.scrap.blog;
 import java.util.List;
 
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.mantralabsglobal.scrap.dataobject.BlogComment;
@@ -27,7 +29,21 @@ public abstract class BlogParser {
 	@Autowired
 	private BlogPostRepository repository;
 	
-	protected static String truncateAfteWords(int n, String str) {
+	protected String truncateAfteWords(int n, String str) {
 		return str.replaceAll("^((?:\\W*\\w+){" + n + "}).*$", "$1");	
 	}  
+	
+	protected void removeStyleAttributes(Elements el){
+		for(Element e : el){
+			if(e.hasAttr("style"))
+			{
+				e.removeAttr("style");
+			}
+			if(e.children() != null && e.children().size()>0)
+			{
+				removeStyleAttributes(e.children());
+			}
+		}
+		
+	}
 }
