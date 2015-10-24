@@ -25,9 +25,6 @@ apply plugin: 'java'
 apply plugin: 'spring-boot'
 apply plugin: 'war'
 
-springBoot {
-    executable = true
-}
 
 // In this section you declare where to find the dependencies of your project
 repositories {
