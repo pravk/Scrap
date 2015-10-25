@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
+
+import org.bson.types.ObjectId;
 import org.jsoup.Jsoup;
 import org.jsoup.helper.StringUtil;
 import org.jsoup.nodes.Document;
@@ -31,11 +33,12 @@ public class BlogScrapper extends com.mantralabsglobal.scrap.Scrapper{
 	@Override
 	public void scrap() throws IOException{
 		int counter = 0;
+		String marker = ObjectId.get().toString();
 		while(summaryQueue.peek() != null && counter< threshold)
 		{
 			try
 			{
-				boolean postsFound = scrapInternal(summaryQueue.poll());
+				boolean postsFound = scrapInternal(summaryQueue.poll(), marker);
 			if(postsFound)
 				counter = 0;
 			else
@@ -48,7 +51,7 @@ public class BlogScrapper extends com.mantralabsglobal.scrap.Scrapper{
 		}
 		
 	}
-	public boolean scrapInternal(String url) throws IOException{
+	public boolean scrapInternal(String url, String marker) throws IOException{
 		
 		Document document;
 		try {
@@ -75,14 +78,14 @@ public class BlogScrapper extends com.mantralabsglobal.scrap.Scrapper{
 			{
 				try
 				{
-					List<BlogPost> blogPostList = parser.getRepository().findByUrl(href);
-					if(blogPostList == null || blogPostList.size()==0){
-						scrapBlogPost(href, null, false);
+					BlogPost blogPost = parser.getRepository().findOneByUrl(href);
+					if(blogPost==null ){
+						scrapBlogPost(href, null, false, marker);
 						postFound = true;
 					}
-					else
+					else if(!marker.equals(blogPost.getMarker()))
 					{
-						scrapBlogPost(href, blogPostList.get(0), true);
+						scrapBlogPost(href, blogPost, true, marker);
 					}
 				}
 				catch(Exception exp)
@@ -99,7 +102,7 @@ public class BlogScrapper extends com.mantralabsglobal.scrap.Scrapper{
 		return postFound;
 	}
 	
-	public void scrapBlogPost(String href, BlogPost ourCopy, boolean commentsOnly) throws IOException{
+	public void scrapBlogPost(String href, BlogPost ourCopy, boolean commentsOnly, String marker) throws IOException{
 		Document document;
 		try {
 			document = Jsoup.connect(href).get();
@@ -126,7 +129,7 @@ public class BlogScrapper extends com.mantralabsglobal.scrap.Scrapper{
 			post.setCommentCount(0);
 		}
 		post.setUrl(href);
-		
+		post.setMarker(marker);
 		repository.save(post);
 	}
 

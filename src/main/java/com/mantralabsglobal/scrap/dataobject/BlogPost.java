@@ -24,7 +24,7 @@ public class BlogPost {
 	private String summary100;
 	private String summary200;
 	private String summary300;
-	
+	private String marker;
 	private String author;
 	private String blog;
 	private String url;
@@ -144,6 +144,14 @@ public class BlogPost {
 
 	public void setSummary300(String summary300) {
 		this.summary300 = summary300;
+	}
+
+	public String getMarker() {
+		return marker;
+	}
+
+	public void setMarker(String marker) {
+		this.marker = marker;
 	}
 
 }
