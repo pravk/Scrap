@@ -19,7 +19,12 @@ public class BlogPost {
 	private String title;
 	private String content;
 	private long lastModified;
-	private String summary;
+	private String summary20;
+	private String summary50;
+	private String summary100;
+	private String summary200;
+	private String summary300;
+	
 	private String author;
 	private String blog;
 	private String url;
@@ -76,13 +81,6 @@ public class BlogPost {
 		this.url = url;
 	}
 
-	public String getSummary() {
-		return summary;
-	}
-
-	public void setSummary(String summary) {
-		this.summary = summary;
-	}
 
 	public List<BlogComment> getComments() {
 		return comments;
@@ -106,6 +104,46 @@ public class BlogPost {
 
 	public void setCommentCount(int commentCount) {
 		this.commentCount = commentCount;
+	}
+
+	public String getSummary20() {
+		return summary20;
+	}
+
+	public void setSummary20(String summary20) {
+		this.summary20 = summary20;
+	}
+
+	public String getSummary50() {
+		return summary50;
+	}
+
+	public void setSummary50(String summary50) {
+		this.summary50 = summary50;
+	}
+
+	public String getSummary100() {
+		return summary100;
+	}
+
+	public void setSummary100(String summary100) {
+		this.summary100 = summary100;
+	}
+
+	public String getSummary200() {
+		return summary200;
+	}
+
+	public void setSummary200(String summary200) {
+		this.summary200 = summary200;
+	}
+
+	public String getSummary300() {
+		return summary300;
+	}
+
+	public void setSummary300(String summary300) {
+		this.summary300 = summary300;
 	}
 
 }

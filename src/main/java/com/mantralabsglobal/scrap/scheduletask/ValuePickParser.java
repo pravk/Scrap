@@ -24,7 +24,12 @@ public class ValuePickParser extends BlogParser{
 		Elements contentElts = document.select("div.post-body");
 		removeStyleAttributes(contentElts);
 		post.setContent(contentElts.html());
-		post.setSummary( truncateAfteWords(20, document.select("div.post-body").text()));
+		post.setSummary20(truncateAfteWords(20, document.select("div.post-body").text()));
+		post.setSummary50(truncateAfteWords(50, document.select("div.post-body").text()));
+		post.setSummary100(truncateAfteWords(100, document.select("div.post-body").text()));
+		post.setSummary200(truncateAfteWords(200, document.select("div.post-body").text()));
+		post.setSummary300(truncateAfteWords(300, document.select("div.post-body").text()));
+		
 		post.setAuthor(document.select("span.post-author").select("span.fn").text());
 		Elements images = document.select("div.post-body").select("img");
 		if(images!= null && images.size()>0)
