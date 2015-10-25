@@ -30,7 +30,23 @@ public abstract class BlogParser {
 	private BlogPostRepository repository;
 	
 	protected String truncateAfteWords(int n, String str) {
-		return str.replaceAll("^((?:\\W*\\w+){" + n + "}).*$", "$1");	
+		String trimmed = str.trim();
+		int words = trimmed.isEmpty() ? 0 : trimmed.split("\\s+").length;
+		
+		if(n < words)
+		{
+			try
+			{
+				return str.replaceAll("^((?:\\W*\\w+){" + n + "}).*$", "$1");	
+			}
+			catch(Throwable e)
+			{
+				e.printStackTrace();
+				return str;
+			}
+		}
+		else 
+			return str;
 	}  
 	
 	protected void removeStyleAttributes(Elements el){
